@@ -52,7 +52,6 @@ Vue.component('recentblogs',{
 
     mounted() {
         this.loading = true;
-        console.log(this.config)
         fetch(this.config.RSS_URL)
             .then(data => data.text() )
             .then(text => new window.DOMParser().parseFromString(text, "text/xml"))
