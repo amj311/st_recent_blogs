@@ -127,3 +127,12 @@ function getCData(string) {
 function getFirstDescendant(el,tagname) {
     return el.getElementsByTagName(tagname)[0];
 }
+
+function insertRecentBlogs(elId,config,version="latest") {
+    let anchorEl = document.getElementById(elId);
+    let html = /*html*/`
+        <div id="RecentBlogInsert"><recentblogs :config="config"></recentblogs></div>
+    `
+    anchorEl.outerHTML = html;
+    new Vue({el:"#RecentBlogInsert",data:{config}});
+}
