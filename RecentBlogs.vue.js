@@ -122,7 +122,7 @@ Vue.component('recentblogs',{
 });
 
 function getCData(string) {
-    return string?.split("<![CDATA[")[1]?.split("]]>")[0];
+    return string?.replace("<![CDATA[","").replace("]]>","");
 }
 function getFirstDescendant(el,tagname) {
     return el.getElementsByTagName(tagname)[0];
