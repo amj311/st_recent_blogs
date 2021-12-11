@@ -1,21 +1,3 @@
-function getCData(string) {
-    return string?.split("<![CDATA[")[1]?.split("]]>")[0];
-}
-function getFirstDescendant(el,tagname) {
-    return el.getElementsByTagName(tagname)[0];
-}
-function createBlogFromElement(el) {
-    let blog = {};
-    blog.title = getCData(el.querySelector("title")?.innerHTML);
-    blog.content = getCData(getFirstDescendant(el,"content:encoded")?.innerHTML);
-    blog.date = getFirstDescendant(el,"pubDate")?.innerHTML;
-    blog.st_link = getFirstDescendant(el,"link")?.innerHTML;
-    blog.image = new window.DOMParser().parseFromString(blog.content, "text/html")
-        .querySelector("img")?.src;
-    blog.description = el.querySelector("description")?.innerHTML;
-    return blog;
-}
-
 const stylesheet = /*html*/`
 <style>
     .strb-main  {
@@ -89,6 +71,7 @@ Vue.component('recentblogs',{
             blogEls: [],
             recents: [],
             showThumbs: this.config.SHOW_THUMBNAILS,
+            unusedDefaultThumbs: [],
             loading: true,
             stylesheet
         }
@@ -114,7 +97,33 @@ Vue.component('recentblogs',{
     methods: {
         prepareMostRecent() {
             this.recents = this.blogEls.splice(0,this.config.QTY)
-                .map(el=>createBlogFromElement(el));
+                .map(el=>this.createBlogFromElement(el));
+        },
+        useDefaultThumb() {
+            if (!this.config.DEFAULT_THUMBNAILS) return null;
+            if (this.unusedDefaultThumbs.length === 0) {
+                this.unusedDefaultThumbs = [...this.config.DEFAULT_THUMBNAILS];
+            }
+            return this.unusedDefaultThumbs.shift();
+        },
+        createBlogFromElement(el) {
+            let blog = {};
+            blog.title = getCData(el.querySelector("title")?.innerHTML);
+            blog.content = getCData(getFirstDescendant(el,"content:encoded")?.innerHTML);
+            blog.date = getFirstDescendant(el,"pubDate")?.innerHTML;
+            blog.st_link = getFirstDescendant(el,"link")?.innerHTML;
+            blog.image = new window.DOMParser().parseFromString(blog.content, "text/html")
+                .querySelector("img")?.src;
+            if (!blog.image) blog.image = this.useDefaultThumb();
+            blog.description = el.querySelector("description")?.innerHTML;
+            return blog;
         }
     }
 });
+
+function getCData(string) {
+    return string?.split("<![CDATA[")[1]?.split("]]>")[0];
+}
+function getFirstDescendant(el,tagname) {
+    return el.getElementsByTagName(tagname)[0];
+}
