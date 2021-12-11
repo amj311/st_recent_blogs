@@ -16,35 +16,81 @@ function createBlogFromElement(el) {
     return blog;
 }
 
-Vue.component('recentblogs',{
-    template : /*html*/`
-    <div id="RecentBlogsVueWrapper">
-        <div v-if="loading">Loading...</div>
-        <div v-else style="display: flex; flex-wrap: wrap;">
-            <div v-for="blog in recents" style="flex-grow: 1; display: flex; justify-content: center;">
-                <div style="margin: 1em; width:100%; max-width: 20em; min-width: 10em; border: 1px solid #ccc">
-                    <div v-if="showThumbs" style="width:100%; height: 8em; display: flex">
-                        <img :src="blog.image"
-                        style="object-fit: cover;
-                            height: 100%;
-                            width: 100%;
-                            object-position: top;" />
-                    </div>
-                    <div style="padding:1em">
-                        <b>{{blog.title || "No Title"}}</b>
-                        <p style="word-break: break-word;">{{blog.description}}</p>    
-                    </div>
+const stylesheet = /*html*/`
+<style>
+    .strb-main  {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .strb-blog-wrapper {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+    }
+    .strb-blog-container {
+        margin: 1em;
+        width:100%;
+        max-width: 20em;
+        min-width: 10em;
+        border: 1px solid #ccc;
+    }
+    .strb-thumb-wrapper {
+        width:100%;
+        height: 8em;
+        display: flex"
+    }
+    .strb-thumb {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        object-position: top;
+    }
+    .strb-blog-content {
+        padding:1em;
+    }
+
+    .strb-blog-title {
+    }
+    
+    .strb-blog-blurb {
+        word-break: break-word;
+    }
+    
+    .strb-button-wrapper {}
+</style>
+`
+
+const template = /*html*/`
+<div id="RecentBlogsVueWrapper">
+    <div v-html="stylesheet"></div>
+    
+    <div v-if="loading" class="strb-loading">Loading...</div>
+    <div v-else class="strb-main">
+        <div v-for="blog in recents" class="strb-blog-wrapper">
+            <div class="strb-blog-container">
+                <div class="strb-thumb-wrapper" v-if="showThumbs">
+                    <img class="strb-thumb" :src="blog.image" />
                 </div>
-            </div>    
-        </div>
-    </div>`,
+                <div class="strb-blog-content">
+                    <div class="strb-blog-title">{{blog.title || "No Title"}}</div>
+                    <div class="strb-blog-blurb">{{blog.description}}</div>    
+                    <div class="strb-button-wrapper"><a class="btn btn-primary" :href="blog.st_link">Read More</a></div>
+                </div>
+            </div>
+        </div>    
+    </div>
+</div>`
+
+Vue.component('recentblogs',{
+    template,
 
     data: function() {
         return {
             blogEls: [],
             recents: [],
             showThumbs: this.config.SHOW_THUMBNAILS,
-            loading: true
+            loading: true,
+            stylesheet
         }
     },
 
@@ -69,7 +115,6 @@ Vue.component('recentblogs',{
         prepareMostRecent() {
             this.recents = this.blogEls.splice(0,this.config.QTY)
                 .map(el=>createBlogFromElement(el));
-            console.log(this.recents)
         }
     }
 });

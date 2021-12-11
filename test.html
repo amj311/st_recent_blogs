@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brett Website</title>
+
+    <!-- HEAD ADDITIONS (GENERAL TAB)-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="RecentBlogs.vue.js"></script>
+    <script>
+        const CONFIG = {
+            RECENT_BLOGS: {
+                RSS_URL: "https://app.steadytide.com/rss.pl?33814_21_Blog",
+                QTY: 3,
+                SHOW_THUMBNAILS: true,
+                DEFAULT_THUMBNAILS: [
+                    "http://app.steadytide.com/users/myteam33814/Media1883.jpg?4622"
+                ],
+            }
+        }
+    </script>
+
+    <style>
+        #RecentBlogsVueWrapper .strb-blog-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            font-family: sans-serif;
+        }
+        #RecentBlogsVueWrapper .strb-blog-blurb {
+            margin: 1em 0;
+        }
+    </style>
+    
+    <!-- END HEAD ADDITIONS -->
+</head>
+<body>
+    <div id="Page1">
+    
+
+        <!-- RECENT BLOGS -->
+        <section> 
+            <h1>Recent Blogs</h1>
+            <recentblogs :config="CONFIG.RECENT_BLOGS"></recentblogs>
+        </section>
+
+
+    </div>
+
+    
+    <script>
+        let pageVue = new Vue({
+            el: "#Page1",
+            data: { CONFIG }
+        });
+    </script>
+
+</body>
+
+</html>
